@@ -53,254 +53,254 @@
 
 
 
-// import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-// // ─── Custom Hook ───────────────────────────────────────────────
-// function useTasks() {
-//   const [tasks, setTasks] = useState(() => {
-//     try {
-//       const saved = localStorage.getItem("tasks");
-//       return saved ? JSON.parse(saved) : [];
-//     } catch {
-//       return [];
-//     }
-//   });
+// ─── Custom Hook ───────────────────────────────────────────────
+function useTasks() {
+  const [tasks, setTasks] = useState(() => {
+    try {
+      const saved = localStorage.getItem("tasks");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
-//   useEffect(() => {
-//     localStorage.setItem("tasks", JSON.stringify(tasks));
-//   }, [tasks]);
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
-//   const addTask = (text) => {
-//     if (!text.trim()) return;
-//     setTasks((prev) => [
-//       ...prev,
-//       {
-//         id: Date.now(),
-//         text: text.trim(),
-//         completed: false,
-//         createdAt: new Date().toLocaleDateString("en-PK", {
-//           day: "numeric", month: "short", year: "numeric",
-//         }),
-//       },
-//     ]);
-//   };
+  const addTask = (text) => {
+    if (!text.trim()) return;
+    setTasks((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        text: text.trim(),
+        completed: false,
+        createdAt: new Date().toLocaleDateString("en-PK", {
+          day: "numeric", month: "short", year: "numeric",
+        }),
+      },
+    ]);
+  };
 
-//   const deleteTask = (id) => setTasks((prev) => prev.filter((t) => t.id !== id));
-//   const toggleTask = (id) => setTasks((prev) => prev.map((t) => t.id === id ? { ...t, completed: !t.completed } : t));
-//   const editTask = (id, newText) => {
-//     if (!newText.trim()) return;
-//     setTasks((prev) => prev.map((t) => t.id === id ? { ...t, text: newText.trim() } : t));
-//   };
+  const deleteTask = (id) => setTasks((prev) => prev.filter((t) => t.id !== id));
+  const toggleTask = (id) => setTasks((prev) => prev.map((t) => t.id === id ? { ...t, completed: !t.completed } : t));
+  const editTask = (id, newText) => {
+    if (!newText.trim()) return;
+    setTasks((prev) => prev.map((t) => t.id === id ? { ...t, text: newText.trim() } : t));
+  };
 
-//   return { tasks, addTask, deleteTask, toggleTask, editTask };
-// }
+  return { tasks, addTask, deleteTask, toggleTask, editTask };
+}
 
-// // ─── AddTask Component ─────────────────────────────────────────
-// function AddTask({ onAdd }) {
-//   const [text, setText] = useState("");
+// ─── AddTask Component ─────────────────────────────────────────
+function AddTask({ onAdd }) {
+  const [text, setText] = useState("");
 
-//   const handleSubmit = () => {
-//     if (!text.trim()) return;
-//     onAdd(text);
-//     setText("");
-//   };
+  const handleSubmit = () => {
+    if (!text.trim()) return;
+    onAdd(text);
+    setText("");
+  };
 
-//   return (
-//     <div className="flex gap-2">
-//       <input
-//         type="text"
-//         value={text}
-//         onChange={(e) => setText(e.target.value)}
-//         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-//         placeholder="Add a new task..."
-//         className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 bg-white"
-//       />
-//       <button
-//         onClick={handleSubmit}
-//         className="bg-violet-600 hover:bg-violet-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
-//       >
-//         Add
-//       </button>
-//     </div>
-//   );
-// }
+  return (
+    <div className="flex gap-2">
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+        placeholder="Add a new task..."
+        className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 bg-white"
+      />
+      <button
+        onClick={handleSubmit}
+        className="bg-violet-600 hover:bg-violet-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
+      >
+        Add
+      </button>
+    </div>
+  );
+}
 
-// // ─── TaskItem Component ────────────────────────────────────────
-// function TaskItem({ task, onDelete, onToggle, onEdit }) {
-//   const [isEditing, setIsEditing] = useState(false);
-//   const [editText, setEditText] = useState(task.text);
+// ─── TaskItem Component ────────────────────────────────────────
+function TaskItem({ task, onDelete, onToggle, onEdit }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editText, setEditText] = useState(task.text);
 
-//   const handleSave = () => {
-//     onEdit(task.id, editText);
-//     setIsEditing(false);
-//   };
+  const handleSave = () => {
+    onEdit(task.id, editText);
+    setIsEditing(false);
+  };
 
-//   return (
-//     <div className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${
-//       task.completed ? "bg-slate-50 border-slate-100 opacity-60" : "bg-white border-slate-200"
-//     }`}>
+  return (
+    <div className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${
+      task.completed ? "bg-slate-50 border-slate-100 opacity-60" : "bg-white border-slate-200"
+    }`}>
 
-//       {/* Checkbox */}
-//       <button
-//         onClick={() => onToggle(task.id)}
-//         className={`w-5 h-5 rounded-full border-2 flex-shrink-0 transition-colors ${
-//           task.completed ? "bg-violet-600 border-violet-600" : "border-slate-300 hover:border-violet-400"
-//         }`}
-//       >
-//         {task.completed && (
-//           <svg className="w-full h-full p-0.5 text-white" viewBox="0 0 12 12" fill="none">
-//             <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-//           </svg>
-//         )}
-//       </button>
+      {/* Checkbox */}
+      <button
+        onClick={() => onToggle(task.id)}
+        className={`w-5 h-5 rounded-full border-2 flex-shrink-0 transition-colors ${
+          task.completed ? "bg-violet-600 border-violet-600" : "border-slate-300 hover:border-violet-400"
+        }`}
+      >
+        {task.completed && (
+          <svg className="w-full h-full p-0.5 text-white" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </button>
 
-//       {/* Text / Edit */}
-//       <div className="flex-1 min-w-0">
-//         {isEditing ? (
-//           <input
-//             autoFocus
-//             value={editText}
-//             onChange={(e) => setEditText(e.target.value)}
-//             onKeyDown={(e) => {
-//               if (e.key === "Enter") handleSave();
-//               if (e.key === "Escape") setIsEditing(false);
-//             }}
-//             onBlur={handleSave}
-//             className="w-full text-sm border-b border-violet-400 focus:outline-none bg-transparent py-0.5"
-//           />
-//         ) : (
-//           <>
-//             <p className={`text-sm truncate ${task.completed ? "line-through text-slate-400" : "text-slate-700"}`}>
-//               {task.text}
-//             </p>
-//             <p className="text-xs text-slate-400 mt-0.5">{task.createdAt}</p>
-//           </>
-//         )}
-//       </div>
+      {/* Text / Edit */}
+      <div className="flex-1 min-w-0">
+        {isEditing ? (
+          <input
+            autoFocus
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSave();
+              if (e.key === "Escape") setIsEditing(false);
+            }}
+            onBlur={handleSave}
+            className="w-full text-sm border-b border-violet-400 focus:outline-none bg-transparent py-0.5"
+          />
+        ) : (
+          <>
+            <p className={`text-sm truncate ${task.completed ? "line-through text-slate-400" : "text-slate-700"}`}>
+              {task.text}
+            </p>
+            <p className="text-xs text-slate-400 mt-0.5">{task.createdAt}</p>
+          </>
+        )}
+      </div>
 
-//       {/* Actions */}
-//       <div className="flex gap-1 flex-shrink-0">
-//         {!task.completed && (
-//           <button
-//             onClick={() => setIsEditing(true)}
-//             className="p-1.5 text-slate-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
-//           >
-//             ✏️
-//           </button>
-//         )}
-//         <button
-//           onClick={() => onDelete(task.id)}
-//           className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-//         >
-//           🗑️
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
+      {/* Actions */}
+      <div className="flex gap-1 flex-shrink-0">
+        {!task.completed && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="p-1.5 text-slate-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+          >
+            ✏️
+          </button>
+        )}
+        <button
+          onClick={() => onDelete(task.id)}
+          className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+        >
+          🗑️
+        </button>
+      </div>
+    </div>
+  );
+}
 
-// // ─── TaskList Component ────────────────────────────────────────
-// function TaskList({ tasks, onDelete, onToggle, onEdit, filter }) {
-//   const filtered = tasks.filter((t) => {
-//     if (filter === "active") return !t.completed;
-//     if (filter === "completed") return t.completed;
-//     return true;
-//   });
+// ─── TaskList Component ────────────────────────────────────────
+function TaskList({ tasks, onDelete, onToggle, onEdit, filter }) {
+  const filtered = tasks.filter((t) => {
+    if (filter === "active") return !t.completed;
+    if (filter === "completed") return t.completed;
+    return true;
+  });
 
-//   if (filtered.length === 0) {
-//     return (
-//       <div className="text-center py-12 text-slate-400">
-//         <p className="text-4xl mb-3">📭</p>
-//         <p className="text-sm">
-//           {filter === "completed" ? "No completed tasks yet"
-//             : filter === "active" ? "You're all caught up!"
-//             : "No tasks yet. Add one above!"}
-//         </p>
-//       </div>
-//     );
-//   }
+  if (filtered.length === 0) {
+    return (
+      <div className="text-center py-12 text-slate-400">
+        <p className="text-4xl mb-3">📭</p>
+        <p className="text-sm">
+          {filter === "completed" ? "No completed tasks yet"
+            : filter === "active" ? "You're all caught up!"
+            : "No tasks yet. Add one above!"}
+        </p>
+      </div>
+    );
+  }
 
-//   return (
-//     <div className="flex flex-col gap-2">
-//       {filtered.map((task) => (
-//         <TaskItem key={task.id} task={task} onDelete={onDelete} onToggle={onToggle} onEdit={onEdit} />
-//       ))}
-//     </div>
-//   );
-// }
+  return (
+    <div className="flex flex-col gap-2">
+      {filtered.map((task) => (
+        <TaskItem key={task.id} task={task} onDelete={onDelete} onToggle={onToggle} onEdit={onEdit} />
+      ))}
+    </div>
+  );
+}
 
-// // ─── Main App ──────────────────────────────────────────────────
-// const FILTERS = ["all", "active", "completed"];
+// ─── Main App ──────────────────────────────────────────────────
+const FILTERS = ["all", "active", "completed"];
 
-// function App() {
-//   const { tasks, addTask, deleteTask, toggleTask, editTask } = useTasks();
-//   const [filter, setFilter] = useState("all");
+function App() {
+  const { tasks, addTask, deleteTask, toggleTask, editTask } = useTasks();
+  const [filter, setFilter] = useState("all");
 
-//   const counts = {
-//     all: tasks.length,
-//     active: tasks.filter((t) => !t.completed).length,
-//     completed: tasks.filter((t) => t.completed).length,
-//   };
+  const counts = {
+    all: tasks.length,
+    active: tasks.filter((t) => !t.completed).length,
+    completed: tasks.filter((t) => t.completed).length,
+  };
 
-//   return (
-//     <div className="min-h-screen bg-slate-50">
-//       <div className="max-w-xl mx-auto px-4 py-8">
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-xl mx-auto px-4 py-8">
 
-//         {/* Header */}
-//         <div className="mb-8">
-//           <h1 className="text-3xl font-bold text-slate-800">My Tasks</h1>
-//           <p className="text-slate-400 text-sm mt-1">
-//             {counts.active} pending · {counts.completed} done
-//           </p>
-//         </div>
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-800">My Tasks</h1>
+          <p className="text-slate-400 text-sm mt-1">
+            {counts.active} pending · {counts.completed} done
+          </p>
+        </div>
 
-//         {/* Stats */}
-//         <div className="grid grid-cols-2 gap-3 mb-6">
-//           <div className="bg-violet-50 rounded-xl p-4">
-//             <p className="text-2xl font-bold text-violet-600">{counts.active}</p>
-//             <p className="text-xs text-violet-400 mt-0.5">Pending</p>
-//           </div>
-//           <div className="bg-emerald-50 rounded-xl p-4">
-//             <p className="text-2xl font-bold text-emerald-600">{counts.completed}</p>
-//             <p className="text-xs text-emerald-400 mt-0.5">Completed</p>
-//           </div>
-//         </div>
+        {/* Stats */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="bg-violet-50 rounded-xl p-4">
+            <p className="text-2xl font-bold text-violet-600">{counts.active}</p>
+            <p className="text-xs text-violet-400 mt-0.5">Pending</p>
+          </div>
+          <div className="bg-emerald-50 rounded-xl p-4">
+            <p className="text-2xl font-bold text-emerald-600">{counts.completed}</p>
+            <p className="text-xs text-emerald-400 mt-0.5">Completed</p>
+          </div>
+        </div>
 
-//         {/* Add Task */}
-//         <div className="mb-6">
-//           <AddTask onAdd={addTask} />
-//         </div>
+        {/* Add Task */}
+        <div className="mb-6">
+          <AddTask onAdd={addTask} />
+        </div>
 
-//         {/* Filter Tabs */}
-//         <div className="flex gap-2 mb-5 bg-slate-100 p-1 rounded-xl">
-//           {FILTERS.map((f) => (
-//             <button
-//               key={f}
-//               onClick={() => setFilter(f)}
-//               className={`flex-1 py-1.5 text-sm font-medium rounded-lg capitalize transition-colors ${
-//                 filter === f ? "bg-white text-violet-600 shadow-sm" : "text-slate-400 hover:text-slate-600"
-//               }`}
-//             >
-//               {f} ({counts[f]})
-//             </button>
-//           ))}
-//         </div>
+        {/* Filter Tabs */}
+        <div className="flex gap-2 mb-5 bg-slate-100 p-1 rounded-xl">
+          {FILTERS.map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`flex-1 py-1.5 text-sm font-medium rounded-lg capitalize transition-colors ${
+                filter === f ? "bg-white text-violet-600 shadow-sm" : "text-slate-400 hover:text-slate-600"
+              }`}
+            >
+              {f} ({counts[f]})
+            </button>
+          ))}
+        </div>
 
-//         {/* Task List */}
-//         <TaskList
-//           tasks={tasks}
-//           onDelete={deleteTask}
-//           onToggle={toggleTask}
-//           onEdit={editTask}
-//           filter={filter}
-//         />
+        {/* Task List */}
+        <TaskList
+          tasks={tasks}
+          onDelete={deleteTask}
+          onToggle={toggleTask}
+          onEdit={editTask}
+          filter={filter}
+        />
 
-//       </div>
-//     </div>
-//   );
-// }
+      </div>
+    </div>
+  );
+}
 
-// export default App;
+export default App;
 
 
 
